@@ -1,56 +1,41 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
-#define MAX 500
-#define MAXl 10
-int main(int argc, char  *argv[]){
-  if( argc != 2 && argc != 3){
-    printf("ERROR SYNTAX.\n");
-    printf("TRUE SYNTAX: cat <filename> or cat <filename> -p \n");
-    return 1;
-  }
-  char s[MAX];
-  int count = 0,i=0;
-  FILE *fptr;
-  if(argc == 2){
-    fptr = fopen(argv[1],"r");
-    if(fptr == NULL){
-      printf("Cannot open %s.\n",argv[1]);
-      return 1;
+#include<stdio_ext.h>
+#define MAX 100
+char *subStr(char *s1, int offset, int number){
+  char *result;
+  int i,n;
+  
+  if(offset < 0  ||number < 0){
+    printf("ERROR SYNTAX!\n");
+    printf("TRUE SYNTAX: subStr( <string name>, <character>, number(>=0)).\n");
+    exit(1);
     }
-    while(fgets(s, MAX, fptr) != NULL){
-      printf("%s",s);
-    }
-    fclose(fptr);
+  result=(char*)malloc((number+1)*sizeof(char));
+  if(result == NULL){
+    printf("Cannot allocate memory!\n");
+    exit(1);
   }
-  if(argc == 3){
-    if(strcmp(argv[2],"-p") != 0 ){
-      printf("ERROR SYNTAX:\n");
-      printf("TRUE SYNTAX: cat <filename> or cat <filename> -p\n");
-      return 1;
-    } else
-      {
-	fptr=fopen(argv[1],"r");
-	if(fptr == NULL){
-	  printf("Cannot open %s.\n",argv[1]);
-	  return 1;
-	}
-	while(fgets(s, MAX, fptr)!= NULL){
-	  count++;
-	  printf("%s",s);
-	  if(count == MAXl){
-	    ++i;
-	    printf("%100d\n",i);
-	    count =0;
-	    getchar();
-	  }
-	}
-	if(count < MAXl){
-	    for(;count<MAXl;count++){
-	      printf("\n");
-	    }
-	  }
-	printf("%100d\n",i+1);
-      }
+  for(i=0;i<number;i++){
+    *(result+i) = *(s1+offset+i);
   }
-return 0;
+  return result;
+}
+
+
+int main(){
+  char s1[MAX], *s2;
+  int offset, number;
+  printf("Enter string: ");
+  gets(s1);
+  printf("Enter offset:");
+  scanf("%d", &offset);
+  __fpurge(stdin);
+  printf("Enter number:");
+  scanf("%d", &number);
+  s2 = subStr(s1, offset, number);
+  printf("Substring is: %s\n",s2);
+  free(s2);
+  return 0;
 }
