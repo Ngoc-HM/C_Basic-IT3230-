@@ -1,30 +1,46 @@
 #include<stdio.h>
+#include<stdlib.h>
 #define MAX 100
+typedef struct{
+  char name[30];
+  char tl[12];
+  char mail[30];
+} pa;
 int main(int argc, char *argv[]){
-  if(argc != 3){
-    printf("ERROR SYNTAX.\n");
-    printf("TRUE SYNTAX: name <filename1> <filename2>\n");
-    return 1;
+  if(argc != 2){
+    printf("ERROR SYNTAX!\n");
+    printf("TRUE: ex4 <filename>\n");
+    exit(1);
   }
-  int num;
-  char buff[MAX];
-  FILE *f1,*f2;
-  f1= fopen(argv[1],"r");
-  f2= fopen(argv[2],"w");
-  if(f1 == NULL){
-    printf("Cannot open %s.\n",argv[1]);
-    return 1;
+  pa a[MAX];
+  FILE *fptr;
+  int n,i,irc;
+  printf("Nhap so khach hang: ");
+  scanf("%d", &n);
+  for(i=0;i<n;i++){
+    printf("Khach hang %d\n",i+1);
+    printf("Ho va ten: ");
+    scanf("%s", a[i].name);
+    printf("so dien thoai: ");
+    scanf("%s", a[i].tl);
+    printf("Email: ");
+    scanf("%s",a[i].mail);
   }
-  if(f2 == NULL){
-    printf("Cannot open %s.\n",argv[2]);
-    return 1;
+  if((fptr=fopen(argv[1],"r+b")) == NULL){
+    printf("Cannot open %s\n",argv[1]);
+    exit(1);
   }
-  while(!feof(f1)){
-    num = fread(buff, sizeof(char), MAX-1, f1);
-    buff[MAX*sizeof(char)] = '\0';
-    
-    printf("%s",buff);
-    fwrite(buff, sizeof(char), num, f2);
+  irc = fwrite(a, sizeof(pa), n, fptr);
+  printf("fwrite return code = %d\n",irc);
+  rewind(fptr);
+  irc = fread(a, sizeof(pa), n, fptr);
+  printf("fread return code = %d\n",irc);
+  for(i=0;i<n;i++){
+    printf("%s-",a[i].name);
+    printf("%s-",a[i].tl);
+    printf("%s\n",a[i].mail);
   }
-  return 0;
+  fclose(fptr);
+  return 0; 
 }
+

@@ -1,84 +1,145 @@
 #include<stdio.h>
-#include<string.h>
 #include<stdlib.h>
-#include<stdio_ext.h>
-#define MAX 200
+#include<string.h>
+#define MAX 500
 typedef struct{
-  int no;
-  int Student_number;
-  char First_name[30];
-  char phone_number[15];
-  double score;
-} student;
-int main(int argc, char *argv[])
-{
-  if(argc != 3){
-    printf("ERROR SYNTAX\n");
-    printf("TRUE SYNTAX: hw2 <filename1> <filename2>\n");
-    exit(1);
-  }
-  student *a;
-  char buff[MAX];
-  FILE *fin, *fout;
-  int n1, n2 = 1, n3 , count = 0, i = 0;
-  fin = fopen(argv[1],"r");
-  fout = fopen(argv[2], "w");
+  char model[40];
+  char space[10];
+  char ssize[15];
+  char price[20];
+} phonedb;
+int main(){
+  int y,x,i,n=0,irc,m1,m2;
+  FILE *fin,*fout;
+  phonedb *a,*b;
+  char s[MAX];
+  fin = fopen("PhoneDB.txt","r");
+  fout= fopen("PhoneDB.dat","w+b");
   if(fin == NULL){
-    printf("cannot open %s\n",argv[1]);
-    exit(1);
+    printf("Cannot open %s\n","PhoneDB.txt");
+    return 1;
   }
   if(fout == NULL){
-    printf("Cannot open %s\n",argv[2]);
-    exit(2);
+    printf("Cannot open %s\n","PhoneDB.dat");
+    return 1;
   }
-  while(fgets(buff, MAX, fin) != NULL){
-    count ++;
+  while(fgets(s, MAX,fin) != NULL){
+    n++;
   }
-  rewind(fin);
-  a=(student*)malloc(count*sizeof(student));
-  while(fscanf(fin,"%d%d%s%s",&(a+i)->no,&(a+i)->Student_number,(a+i)->First_name,(a+i)->phone_number) != EOF){
-     printf("%-10d%-10d%-24s%-15s\n",(a+i)->no,(a+i)->Student_number,(a+i)->First_name,(a+i)->phone_number);
-     i++;
+  a=(phonedb*)malloc(n*sizeof(phonedb));
+  if(a == NULL){
+    printf("Memory allocation failed!\n");
+    return 1;
   }
-  n1 = i;
-  for(i=0;i<n1;i++){
-    printf("Diem  sinh vien %d: ",i+1);
-    scanf("%lf",&(a+i)->score);
-    }
-  
-  for(i=0;i<n1;i++){
-    fprintf(fout,"%-10d%-10d%-24s%-15s%.2lf\n",(a+i)->no,(a+i)->Student_number,(a+i)->First_name,(a+i)->phone_number,(a+i)->score);
+  if(fseek(fin,0,SEEK_SET) != 0){
+    printf("Fseek failed!\n");
+    return 1;
+  }
+  do{
+    printf("*********Phone catalog*******\n");
+    printf("1. Import DB from text\n");
+    printf("2. Import from  DB\n");
+    printf("3. Print All Database\n4. Search by  phone Model\n");
+    printf("5. Exit\n");
+    printf("Enter your choose: ");
+    scanf("%d",&x);
+    switch(x){
+    case 1:
+      i=0;
+      while(fscanf(fin,"%s%s%s%s",(a+i)->model,(a+i)->space,(a+i)->ssize,(a+i)->price) != EOF){
+	i++;
       }
-  while(n2 != 0){
-    n3 = n1;
-    printf("Nhap so sinh vien muon them( Nhap 0 de thoat)\n");
-    scanf("%d",&n2);
-    n1=n1+n2;
-    a=(student*)realloc(a, n1*sizeof(student));
-    if( a == NULL){
-      printf("Memory allocation failed.\n");
-      exit(1);
+      irc=fwrite(a, sizeof(phonedb), n, fout);
+      if(fseek(fout, 0, SEEK_SET) != 0){
+	printf("Fseek failed!\n");
+	return 1;
+      }
+      getchar();
+      break;
+    case 2:
+      printf("Enter your choose(1 to read from begining of file, 2 to read from end of file: ");
+      scanf("%d",&y);
+      switch(y){
+      case 1:
+	printf("Enter start position:(1->%d) ",n);
+	scanf("%d", &m1);
+	while(m1<1||m1>n){
+	  printf("Re-enter start position: ");
+	  scanf("%d", &m1);
+	}
+	printf("Enter the number of record you want to read: ");
+	scanf("%d", &m2);
+	b = (phonedb*)malloc((m1+m2)*sizeof(phonedb));
+	if(b==NULL){
+	  printf("Memory allocation failed!\n");
+	  return 1;
+	}
+	if(fseek(fout, (m1-1)*sizeof(phonedb), SEEK_SET) !=0){
+	  printf("Fseek failed!\n");
+	  return 1;
+	}
+      fread(b, sizeof(phonedb), m2, fout);
+      for(i=0;i<m2;i++){
+	  printf("%-30s%-9s%-9s%-15s\n",(b+i)->model,(b+i)->space,(b+i)->ssize,(b+i)->price);
+	}
+      break;
+      case 2:
+	printf("Enter start position:(1->%d) ",n);
+	scanf("%d", &m1);
+	while(m1<1||m1>n){
+	  printf("Re-enter start position: ");
+	  scanf("%d", &m1);
+	}
+	printf("Enter the number of record you want to read: ");
+	scanf("%d", &m2);
+	b = (phonedb*)malloc((m1+m2)*sizeof(phonedb));
+	if(b==NULL){
+	  printf("Memory allocation failed!\n");
+	  return 1;
+	}
+	if(fseek(fout, (m1-m2)*sizeof(phonedb), SEEK_SET) !=0){
+	  printf("Fseek failed!\n");
+	  return 1;
+	}
+	fread(b, sizeof(phonedb), m2, fout);
+	for(i=0;i<m2;i++){
+	  printf("%-30s%-9s%-9s%-15s\n",(b+i)->model,(b+i)->space,(b+i)->ssize,(b+i)->price);
+	}
+	break;
+      }
+	break;
+	
+    case 3:
+      if(fseek(fout, 0, SEEK_SET) !=0){
+	printf("Fseek failed!\n");
+	return 1;
+      }
+      fread(a, sizeof(phonedb), n,fout);
+      for(i=0;i<n;i++){
+	printf("%-30s%-9s%-20s%-15s\n",(a+i)->model,(a+i)->space,(a+i)->ssize,(a+i)->price);
+      }
+      printf("Enter to continue\n");
+      getchar();
+      break;
+    case 4:
+      while(strcmp(s,"0") != 0){
+	printf("Enter phone model (0 to exit):  ");
+	scanf("%s",s);
+	for(i=0;i<n;i++){
+	  if(strcmp((a+i)->model,s) == 0){
+	    printf("%-30s%-9s%-20s%-15s\n",(a+i)->model,(a+i)->space,(a+i)->ssize,(a+i)->price);
+	  } 
+	}
+      }
+      printf("Enter to continue\n");
+      getchar();
+      break;
+    default: break;
     }
-    for(i=0;i<n2;i++){
-      printf("sinh vien thu %d:\n",n3+1+i);
-      
-      printf("mssv: ");
-      scanf("%d",&(a+n3+i)->Student_number);
-      printf("Ho va ten( ko co dau cach): ");
-      scanf("%s",(a+n3+i)->First_name);
-      __fpurge(stdin);
-      printf("So dien thoai: ");
-      scanf("%s",(a+n3+i)->phone_number);
-      __fpurge(stdin);
-      printf("Diem: ");
-      scanf("%lf", &(a+n3+i)->score);
-    }
-  }
-  for(i= count;i<n1;i++){
-    fprintf(fout,"%-10d%-10d%-24s%-15s%.2lf\n",-(i+1),(a+i)->Student_number,(a+i)->First_name,(a+i)->phone_number,(a+i)->score);
-  }
+  } while(x != 5);
   fclose(fin);
   fclose(fout);
   free(a);
+  free(b);
   return 0;
 }
