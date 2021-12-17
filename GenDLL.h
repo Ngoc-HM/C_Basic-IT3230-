@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-typedef phonedb elementtype;
+typedef element elementtype;
 typedef struct node node;
 struct node{
   elementtype element;
@@ -158,13 +158,6 @@ void freelist(){
   }
 }
 
-void displaynode(node *p){
-  if(p==NULL){
-    printf("Null pointer error\n");
-    return;
-  }
-  printf("%-30s%-10s%-10s%s\n",p->element.model,p->element.space,p->element.ssize,p->element.price);
-}
 
 void  reverselist(){
   node *tmp, *cur=root;
