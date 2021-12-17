@@ -1,41 +1,20 @@
 #include<stdio.h>
-#define MAX 100
-typedef struct{
-  char name[20];
-  char tel[11];
-  char email[25];
-} phoneaddress;
-int main(int argc, char *argv[]){
-  if(argc != 2){
-    printf("ERROR.\n");
-    return 1;
-  }
-  phoneaddress arr[MAX];
-  int n,i,irc;
-  FILE *fin;
-  fin= fopen(argv[1],"w+b");
-  if(fin == NULL || fout == NULL){
-    printf("Cannot open file.\n");
-    return 0;
-  }
-  printf("Nhap so nguoi dung(<20): ");
-  scanf("%d",&n);
-  for(i=0;i<n;i++){
-    printf("Nguoi dung %d: ",i+1);
-    printf("ten: ");
-    fgets(arr[i].name, sizeof(arr[i].name), stdin);
-    printf("So dien thoai:");
-    fgets(arr[i].tel, sizeof(arr[i].name), stdin);
-    printf("Email: ");
-    fgets(arr[i].email, sizeof(arr[i].email), stdin);
-  }
-  // write the entire array into the file
-  
-  irc = fwrite(arr, sizeof(phoneaddress), n, fin);
-  printf("fwite return code = %d\n",irc);
-  fclose(fin);
-  // read from this file to array agian
-  
-      return 0;
+#include<string.h>
+void towers(int, char, char, char);
+int main(){
+  int i=1;
+  int num;
+  printf("Enter the number of disks: "); scanf("%d", &num);
+  printf("The sequence of moves involved in the Tower of Hanoi are:\n");
+  towers(num, 'A','C','B');
+  return 0;
 }
-
+void towers(int num, char frompeg, char topeg, char auxpeg){
+  if(num == 1){
+    printf("\n Move the disk 1 from peg %c to peg %c", frompeg, topeg);
+    return;
+  }
+  towers(num-1, frompeg, auxpeg, topeg);
+  printf("\n Move disk %d from peg %c to peg %c", num, frompeg, topeg);
+  towers(num-1, auxpeg, topeg, frompeg);
+}

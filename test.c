@@ -1,60 +1,28 @@
 #include<stdio.h>
-#include<stdlib.h>
-typedef struct linklist{
-  int x;
-  struct linklist *next;
-} ilist;
-ilist *root, *cur;
-ilist *makenewnode(int x){
-  ilist *new=(ilist*)malloc(sizeof(ilist));
-  new->x=x;
-  new->next=NULL;
-  return new;
-}
-int readlist(){
-  int x;
-  printf("Nhap so nguyen x: ");
-  scanf("%d",&x);
-  return x;
-}
-void insertathead(int x){
-  ilist *new=makenewnode(x);
-  if(root==NULL){
-    root=new;
-  } else{
-    new->next=root;
-    root=new;
-    cur=root;
-  }
-  return;
-}
-void displaynode(ilist *p){
-  if(p==NULL){
-    printf("loi con tro null\n");
-    return;
-  }
-  printf("%d\n",p->x);
-  return;
-}
-void traversinglist(){
-  ilist *p;
-  for(p=root;p!=NULL;p=p->next){
-    printf("%d\n",p->x);
-  }
-  return;
-}
+#include<string.h>
+#include<math.h>
 int main(){
-  int n,i;
-  printf("Nhap so luong so nguyen ban muon: ");
-  scanf("%d", &n);
-  for(i=0;i<n;i++){
-    int x=readlist();
-    insertathead(x);
+  char s[100];
+  char c;
+  int sum=0,x;
+  int count,i,a[26];
+  printf("Nhap chuoi: ");
+  gets(s);
+  for(i=0;i<strlen(s);i++);
+  printf("So ki tu trong chuoi la: %d\n", i);
+  for(i=0;i<26;i++){
+    a[i]=0;
   }
-  traversinglist();
+  for(i=0;i<strlen(s);i++){
+    if(s[i]>='A' && s[i]<='Z'){
+      ++a[s[i]-'A'];
+    }
+  }
+  for(i=0;i<26;i++){
+    if(a[i] > 0){
+      printf("Ki tu %c xuat hien %d lan\n", i+'A', a[i]);
+    }
+  }
+  
   return 0;
 }
-
-
-  
-  

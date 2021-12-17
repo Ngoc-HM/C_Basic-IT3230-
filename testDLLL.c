@@ -1,12 +1,10 @@
 #include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
 typedef struct{
   char model[40];
   char space[10];
   char ssize[15];
   char price[20];
-}phonedb;
+} phonedb;
 #include "GenDLL.h"
 phonedb inputnode(){
   phonedb a;
@@ -16,6 +14,7 @@ phonedb inputnode(){
   printf("Enter price: "); scanf("%s",a.price);
   return a;
 }
+
 void displaynode(node *p){
   if(p==NULL){
     printf("Null pointer error\n");
@@ -23,6 +22,7 @@ void displaynode(node *p){
   }
   printf("%-30s%-10s%-10s%s\n",p->element.model,p->element.space,p->element.ssize,p->element.price);
 }
+
 void traversinglist(){
   node *p;
   for(p=root;p!=NULL;p=p->next){
@@ -31,14 +31,29 @@ void traversinglist(){
   return;
 }
 int main(){
-  printf("Testing insertafter function.\n");
-  insertafter(inputnode());
-  displaynode(root);
-  printf("Testing insertathead function.\n");
-  insertathead(inputnode());
-  traversinglist();
-  printf("Testting insertattail function.\n");
-  insertattail(inputnode());
-  traversinglist();
+  int x;
+  phonedb tmp;
+  FILE *f1;
+  printf("***************DOUBLY LINKED LIST***************\n");
+  printf("1. Import from PhoneDB.dat(insertafter)\n");
+  printf("2. Display (traverse)\n");
+  printf("Your choice? ");
+  scanf("%d", &x);
+  switch(x){
+  case 1:
+    if((f1=fopen("PhoneDB.dat","r+b")) == NULL){
+      printf("Cannot open file PhoneDB.dat\n");
+      return 1;
+    }
+    if(fread(&tmp, sizeof(phonedb), 1, fin)!=NULL){
+      inserathead(tmp);
+    }
+    printf("Done!\n");
+    break;
+  case 2:
+    traversinglist();
+    break;
+  default break;
+  }while(x!=12);
   return 0;
 }
